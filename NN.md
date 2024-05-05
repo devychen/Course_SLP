@@ -1,4 +1,4 @@
-[Return to contents](https://github.com/devychen/Lab_NLP2/tree/main#readme)
+[Return to contents](https://github.com/devychen/Notes-SNLP/tree/main#readme)
 
 # Neural Networks
 ## Basics
@@ -20,4 +20,4 @@ An architecture of NN. Also called **multi-layer perceptrons (MLPs)**.
 ## Training NNs
 
 
-[Return to contents](https://github.com/devychen/Lab_NLP2/tree/main#readme)
+[Return to contents](https://github.com/devychen/Notes-SNLP/tree/main#readme)

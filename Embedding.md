@@ -1,4 +1,4 @@
-[Return to contents](https://github.com/devychen/Lab_NLP2/tree/main#readme)
+[Return to contents](https://github.com/devychen/Notes-SNLP/tree/main#readme)
 
 # Embedding
 ## Vector semantics
@@ -93,4 +93,4 @@ Vectos are dense: values are real-valued numbers that can be negative, instead o
 from the $D$ docs in some collection that best matches a query $q$.
 - **Vectors**: at heart, just a list/array of numbers.
 
-[Return to contents](https://github.com/devychen/Lab_NLP2/tree/main#readme)
+[Return to contents](https://github.com/devychen/Notes-SNLP/tree/main#readme)

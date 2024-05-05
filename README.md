@@ -1,8 +1,8 @@
 # Study Notes
 
 ### Shortcuts
-[Embedding](https://github.com/devychen/Lab_NLP2/blob/main/Embedding.md) <br>
-[Neural Networds](https://github.com/devychen/Lab_NLP2/blob/main/NN.md)
+[Embedding](https://github.com/devychen/Notes-SNLP/blob/main/Embedding.md) <br>
+[Neural Networds](https://github.com/devychen/Notes-SNLP/blob/main/NN.md)
 
 
 ### Useful Sources
