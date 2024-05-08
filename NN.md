@@ -54,7 +54,7 @@ $
   $h=\sigma(Wx+b)$ (if using sigmoid as af)
 - Notation for dimentionality:
   - Input layer - layer 0 <br> hidden layer - layer 1 <br> output layer - layer 2
-  - $ x \in \mathbb{R^{n_0}} $, $x$ is a vector of real numbers of dimention $n_0$
+  - $x\in \mathbb{R^{n_0}}$: $x$ is a vector of real numbers of dimention $n_0$
   - a column vector of dimensionality $[n_0, 1]$
   
 
