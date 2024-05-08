@@ -8,11 +8,12 @@
 _A very good article on [What The Hell Is Perceptron](https://towardsdatascience.com/what-the-hell-is-perceptron-626217814f53)_
 - A linear classifier, has a binary output $0$ or $1$, does NOT have a non-linear activation function (unit-step is a piecewise linear. function).
 - Compute outputs as: <br>
-$y = 
-  \begin{cases}
-    0  & \quad \text{if } w\times x + b\leq 0 \\
+```{math}
+y = \begin{cases}
+    0  & \quad \text{if } w\times x + b\leq 0\\
     1  & \quad \text{if } w\times x + b > 0
-  \end{cases}$
+  \end{cases}
+```
 
 
 #### Logical XOR Problem
