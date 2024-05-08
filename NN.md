@@ -7,7 +7,7 @@
 ### Perceptron
 _A very good article on [What The Hell Is Perceptron](https://towardsdatascience.com/what-the-hell-is-perceptron-626217814f53)_
 - A linear classifier, has a binary output $0$ or $1$, does NOT have a non-linear activation function (unit-step is a piecewise linear. function).
-- Compute: <br>
+- Compute outputs as: <br>
 $
 y =
   \begin{cases}
@@ -35,7 +35,7 @@ $
 - **Units**: Modern NNs is a network of small computing units, each of which takes a vector of input values and produces a single output value.
 - Three popular non-linear function $f()$:
   - **Sigmoid**
-  - **Tanh**
+  - **Tanh** (Tangible H)
   - **ReLU** (Recified Linear Unit)
 
 
