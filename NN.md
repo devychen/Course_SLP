@@ -11,7 +11,7 @@ _A very good article on [What The Hell Is Perceptron](https://towardsdatascience
 $y = 
   \begin{cases}
     0  & \quad \text{if } w\times x + b\leq 0 \\
-    1  & \quad \text{if } w\times x + b > 0 \\
+    1  & \quad \text{if } w\times x + b > 0
   \end{cases}$
 
 
