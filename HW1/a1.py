@@ -9,7 +9,7 @@
 """
 
 from gensim.models import KeyedVectors
-# Successfully installed gensim-4.3.2, using pip install gensim
+# Successfully installed gensim-4.3.2 beforehead, using `pip install gensim``
 import spacy
 import numpy as np
 from numpy import dot
@@ -50,7 +50,8 @@ def load_data(filename):
         for index, row in enumerate(csv_reader): 
             data[index] = {'description': row['description'], 'url': row['url']}
     return data
-    # csv_reader is a variable representing an instance of the csv.DictReader class.,
+    # About csv_reader:
+    # a variable representing an instance of the csv.DictReader class.,
     # an iterator that we use to read rows from the CSV file one by one, 
     # with each row being represented as a dictionary.
 

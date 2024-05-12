@@ -20,7 +20,7 @@ class MyTestCase(unittest.TestCase):
                         'url': 'https://www.ted.com/talks/al_gore_on_averting_climate_crisis\n'
                         }
                     }
-        actual = load_data('/Users/ychen/Lab_NLP2/HW1/test_data.csv')
+        actual = load_data('/Users/ychen/NOTES-SNLP/HW1/test_data.csv')
         self.assertDictEqual(expected, actual)
 
     def test_preprocess_text1(self):
@@ -316,7 +316,7 @@ class MyTestCase(unittest.TestCase):
         self.assertAlmostEqual(expected, actual)
 
     def test_k_most_similar(self):
-        with open('/Users/ychen/Lab_NLP2/HW1/test_dict.pkl', 'rb') as f:
+        with open('/Users/ychen/NOTES-SNLP/HW1/test_dict.pkl', 'rb') as f:
             data_dict = pickle.load(f)
         query = "migrating birds"
         expected = [(49, 0.318628), (17, 0.31004193), (32, 0.3005341)]
