@@ -83,6 +83,13 @@ _A very good article on [What The Hell Is Perceptron](https://towardsdatascience
   - This number inside is called "activation" of that neuron, representing the inputs & outputs of network, it has influence on the activation of each neuron in the next layer. <span style="color:lightgray">(e.g. a pixel)</span>
 - Why using layers
   - Determine how strong the connectons between layers are at the heart of how NN operates. 
+  - The layered structure of the neural network is great because it allows you to <ins>break down difficult problems into bite-size steps</ins>, so that moving from one layer to the next is relatively straightforward.
+- How information passes between layers (**weights**)
+  - Assign weights (just numbers) to each neuron, each weight is an indication of how its neuron in the first layer is <ins>correlated with</ins> this new neuron in the second layer.
+  - the hope is that if we add up all the desires from all the weights, the end result will be a neuron that does a reasonably good job of detecting what we’re looking for.
+  - So to actually compute the value of this second-layer neuron, we take all the activations from the neurons in the first layer, and compute their weighted sum:
+    $w_1a_1+w_2a_2+w_3a_3+...+w_na_n$
+  - the result is a number, we need to squish the real number line into the range between 0 and 1, thus - **Sigmoid Squashification** <span style="color:lightgray">(S型壓縮)</span>
 
 #### Learning (how to train it with labeled examples)<br>
 *(Source: [What is Gradient Descent?](https://www.youtube.com/watch?v=IHZwWFHWa-w&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&index=3))*
