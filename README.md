@@ -2,7 +2,7 @@
 
 ### Shortcuts
 [Embedding](https://github.com/devychen/Notes-SNLP/blob/main/Embedding.md) <br>
-[Neural Networds](https://github.com/devychen/Notes-SNLP/blob/main/NN.md)
+[Neural Networds](https://github.com/devychen/Notes-SNLP/blob/main/Neural%20Networks.md)
 
 
 ### Useful Sources
