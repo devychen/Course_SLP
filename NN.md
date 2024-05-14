@@ -111,7 +111,7 @@ Below are notes on the [Interactive 3Blue1Brown Series on DL](https://www.3blue1
   ![Image](/pics/neural-network-function.png) <br>
   - Using matrixes as a whole instead of one-by-one: <br>
   ![Image](/pics/mathrepre1.png) <br>
-  <img src="pics/mathrepre2.png" alt="drawing" width="1300"/> <br>
+  <img src="pics/mathrepre2.png" alt="drawing" width="1300"/> 
 
 
 
