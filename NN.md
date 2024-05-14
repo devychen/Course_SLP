@@ -97,21 +97,21 @@ Below are notes on the [Interactive 3Blue1Brown Series on DL](https://www.3blue1
     - It steadily increases around $0$. <br>
     i.e. $\sigma(-1000)$ is close to $0$
     - So the activation of the neuron here will basically be a measure of <ins>how positive the weighted sum is</ins>. 
-    ![Image](sigmoid.png)
+    ![Image 1](sigmoid.png)
   - But maybe it’s not that we want the neuron to light up when this weighted sum is bigger than 0. Maybe we only want it to be meaningfully active when that sum is bigger than, say, 10. That is, we want some **bias** for it to be inactive.  <br>
-    ![Image](bias.png)
+    ![Image 2](bias.png)
   - So:
     - the weights tell you this neuron in the second layer is <ins>picking up on what pattern </ins>, and 
     - the bias tells you <ins>how big that weighted sum needs to be</ins> before the neuron gets <ins>meaningfully active</ins>. <br>
-    ![Image](dimensionality.png)
+    ![Image 3](/pics/dimensionality.png)
 
 - **Math representation/Formal annotation**
   > Each neuron is a function, it takes in the activations of all neurons in the previous layer, and spits out a number between $0 - 1$. <br>
   > The entire network is just a function too! It takes in 784 numbers as its input, and spits out 10 numbers as its output. It’s an absurdly complicated function, because it takes over 13,000 parameters (weights and biases), and it involves iterating many matrix-vector products and sigmoid squishificaitons together. But it’s just a function nonetheless. <br>
-  ![Image](/pics/neural-network-function.png) <br>
+  ![Image 4](/pics/neural-network-function.png) <br>
   - Using matrixes as a whole instead of one-by-one: <br>
-  ![Image](/pics/mathrepre1.png) <br>
-  ![Image](/pics/mathrepre2.png) <br>
+  ![Image 5](/pics/mathrepre1.png) <br>
+  ![Image 6](/pics/mathrepre2.png) <br>
 
 
 
