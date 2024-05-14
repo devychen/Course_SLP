@@ -99,7 +99,7 @@ Below are notes on the [Interactive 3Blue1Brown Series on DL](https://www.3blue1
     - So the activation of the neuron here will basically be a measure of <ins>how positive the weighted sum is</ins>. 
     <img src="pics/sigmoid.png" alt="drawing" width="900"/>
   - But maybe it’s not that we want the neuron to light up when this weighted sum is bigger than 0. Maybe we only want it to be meaningfully active when that sum is bigger than, say, 10. That is, we want some **bias** for it to be inactive.  <br>
-    <img src="pics/bias.png" alt="drawing" width="900"/>
+    ![Image](/../../ychen/Notes-SNLP/pics/bias.png)
   - So:
     - the weights tell you this neuron in the second layer is <ins>picking up on what pattern </ins>, and 
     - the bias tells you <ins>how big that weighted sum needs to be</ins> before the neuron gets <ins>meaningfully active</ins>. <br>
