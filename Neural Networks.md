@@ -108,12 +108,10 @@ Below are notes on the [Interactive 3Blue1Brown Series on DL](https://www.3blue1
 - **Math representation/Formal annotation**
   > Each neuron is a function, it takes in the activations of all neurons in the previous layer, and spits out a number between $0 - 1$. <br>
   > The entire network is just a function too! It takes in 784 numbers as its input, and spits out 10 numbers as its output. It’s an absurdly complicated function, because it takes over 13,000 parameters (weights and biases), and it involves iterating many matrix-vector products and sigmoid squishificaitons together. But it’s just a function nonetheless. <br>
-  <img src="pics/neural-network-function.png" alt="drawing" width="1300"/>
+  <img src="pics/neural-network-function.png" alt="drawing" width="1000"/>
   - Using matrixes as a whole instead of one-by-one: <br>
-  <img src="pics/mathrepre1.png" alt="drawing" width="1300"/> <br>
-  <img src="pics/mathrepre2.png" alt="drawing" width="1300"/> <br>
-
-
+  <img src="pics/mathrepre1.png" alt="drawing" width="900"/> <br>
+  <img src="pics/mathrepre2.png" alt="drawing" width="500"/> <br>
 
 #### Learning (how to train it with labeled examples)<br>
 *(Source: [What is Gradient Descent?](https://www.youtube.com/watch?v=IHZwWFHWa-w&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&index=3))*
