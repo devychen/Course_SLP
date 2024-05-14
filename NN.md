@@ -65,34 +65,64 @@ _A very good article on [What The Hell Is Perceptron](https://towardsdatascience
 ## Training NNs
 
 
-## Additional Materials:
+## Additional Materials
 [Interactive 3Blue1Brown Series on DL](https://www.3blue1brown.com/topics/neural-networks)
 
 #### Introduction
-  > Somehow identifying digits is incredibly easy for your brain to do, but almost impossible to describe how to do. The traditional methods of computer programming, with if statements and for loops and classes and objects and functions, just don’t seem suitable to tackle this problem. But what if we could write a program that mimics the structure of your brain? That’s the idea behind neural networks. <br>
+  > Somehow identifying digits is incredibly easy for your brain to do, but almost impossible to describe how to do. The traditional methods of computer programming, with if statements and for loops and classes and objects and functions, just don’t seem suitable to tackle this problem. But what if we could write a program that mimics the structure of your brain? That’s <ins>the idea behind neural networks</ins>. <br>
 
-  > Moreover, just as you learn by seeing many examples, the “learning” part of machine learning comes from the fact that we never give the program any specific instructions for how to identify digits. Instead, we’ll show it many examples of hand-drawn digits together with labels for what they should be, and leave it up to the computer to adapt the network based on each new example.<br>
+  > Moreover, just as you learn by seeing many examples, the “learning” part of machine learning comes from the fact that we never give the program any specific instructions for how to identify digits. Instead, we’ll <ins>show it many examples of hand-drawn digits together with labels for what they should be, and leave it up to the computer to adapt the network based on each new example</ins>.
 
 #### Structure
 *(Sources: [What is NN? (3Blue1Brown)](https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&index=1) and a recommended [online book](http://neuralnetworksanddeeplearning.com/) on NN and DL.)*
 
-- Many <ins>variants</ins>: convolutional NNs, recurrent NNs, transformers, ...
-  - Plain vanilla form, aka MLP (multilayer perceptron)
+- Many <ins>variants</ins>: C<span style="color:lightgray">onvolutional</span>NNs, R<span style="color:lightgray">ecurrent</span>NNs, transformers, ...
+  - Plain vanilla form, aka **MLP (multilayer perceptron)**
 - **Neuron**: a thing that holds a number, between $0.0 - 1.0$. 
   - NN are just a bunch of neurons connected together. The higher the lighter the active.
   - This number inside is called "activation" of that neuron, representing the inputs & outputs of network, it has influence on the activation of each neuron in the next layer. <span style="color:lightgray">(e.g. a pixel)</span>
 - Why using layers
   - Determine how strong the connectons between layers are at the heart of how NN operates. 
   - The layered structure of the neural network is great because it allows you to <ins>break down difficult problems into bite-size steps</ins>, so that moving from one layer to the next is relatively straightforward.
+  - <span style="color:lightgray">In this example, 2nd layer for edges, 3rd layer for larger scale patterns such as long lines and loops, more layers etc.</span>
 - How information passes between layers (**weights**)
-  - Assign weights (just numbers) to each neuron, each weight is an indication of how its neuron in the first layer is <ins>correlated with</ins> this new neuron in the second layer.
+  - > what parameters the network should have, what knobs and dials you should be able to tweak, so that it’s expressive enough to potentially capture the pattern.
+  - Assign **weights** (just numbers) to each neuron, each weight is an indication of how its neuron in the first layer is <ins>correlated with</ins> this new neuron in the second layer.
   - the hope is that if we add up all the desires from all the weights, the end result will be a neuron that does a reasonably good job of detecting what we’re looking for.
   - So to actually compute the value of this second-layer neuron, we take all the activations from the neurons in the first layer, and compute their weighted sum:
     $w_1a_1+w_2a_2+w_3a_3+...+w_na_n$
-  - the result is a number, we need to squish the real number line into the range between 0 and 1, thus - **Sigmoid Squashification** <span style="color:lightgray">(S型壓縮)</span>
+  - the result is a number, we need to squish the real number line into the range between $0 - 1$, thus - **Sigmoid Squashification $\sigma$** <span style="color:lightgray">(S型壓縮)</span> or other functions.
+    - Very negative inputs end up close to $0$
+    - very positive inputs end up close to $1$
+    - It steadily increases around $0$. <br>
+    i.e. $\sigma(-1000)$ is close to $0$
+    - So the activation of the neuron here will basically be a measure of <ins>how positive the weighted sum is</ins>. 
+    ![Image](sigmoid.png)
+  - But maybe it’s not that we want the neuron to light up when this weighted sum is bigger than 0. Maybe we only want it to be meaningfully active when that sum is bigger than, say, 10. That is, we want some **bias** for it to be inactive. 
+    ![Image](bias.png)
+  - So:
+    - the weights tell you this neuron in the second layer is <ins>picking up on what pattern </ins>, and 
+    - the bias tells you <ins>how big that weighted sum needs to be</ins> before the neuron gets <ins>meaningfully active</ins>.
+    ![Image](dimensionality.png)
+
+- **Math representation/Formal annotation**
+  > Each neuron is a function, it takes in the activations of all neurons in the previous layer, and spits out a number between $0 - 1$. <br>
+  > The entire network is just a function too! It takes in 784 numbers as its input, and spits out 10 numbers as its output. It’s an absurdly complicated function, because it takes over 13,000 parameters (weights and biases), and it involves iterating many matrix-vector products and sigmoid squishificaitons together. But it’s just a function nonetheless. <br>
+  ![Image](neural-network-function.png)
+  - Using matrixes as a whole instead of one-by-one:
+  ![Image](mathrepre1.png)
+  ![Image](mathrepre2.png)
+
+
 
 #### Learning (how to train it with labeled examples)<br>
 *(Source: [What is Gradient Descent?](https://www.youtube.com/watch?v=IHZwWFHWa-w&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&index=3))*
+> By learning, we mean getting the computer to find an optimal setting for all these many, many numbers that will solve the problem at hand
+
+
+
+
+
 
 #### Backpropagation
-*(Source: [What is bp doing?](https://www.youtube.com/watch?v=Ilg3gGewQ5U&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&index=4)*
+*(Source: [What is backpropagation doing?](https://www.youtube.com/watch?v=Ilg3gGewQ5U&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&index=4))*
