@@ -1,1 +1,0 @@
-![Image of bias](/pics/bias.png)
