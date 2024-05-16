@@ -66,7 +66,7 @@
 
 
 ## Additional Materials
-Below are notes on the Interactive 3Blue1Brown Series on DL, [written version](https://www.3blue1brown.com/topics/neural-networks), and the [video](https://www.3blue1brown.com/topics/neural-networks)
+> Below are notes based on the Interactive 3Blue1Brown Series on DL, [written version](https://www.3blue1brown.com/topics/neural-networks), and the [video](https://www.3blue1brown.com/topics/neural-networks).<br> He's also recommended an [online book](http://neuralnetworksanddeeplearning.com/) on NN and DL.
 
 #### Introduction
   > Somehow identifying digits is incredibly easy for your brain to do, but almost impossible to describe how to do. The traditional methods of computer programming, with if statements and for loops and classes and objects and functions, just don’t seem suitable to tackle this problem. But what if we could write a program that mimics the structure of your brain? That’s <ins>the idea behind neural networks</ins>. <br>
@@ -74,8 +74,6 @@ Below are notes on the Interactive 3Blue1Brown Series on DL, [written version](h
   > Moreover, just as you learn by seeing many examples, the “learning” part of machine learning comes from the fact that we never give the program any specific instructions for how to identify digits. Instead, we’ll <ins>show it many examples of hand-drawn digits together with labels for what they should be, and leave it up to the computer to adapt the network based on each new example</ins>.
 
 #### Structure
-*(Sources: [What is NN? (3Blue1Brown)](https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&index=1) and a recommended [online book](http://neuralnetworksanddeeplearning.com/) on NN and DL.)*
-
 - Many <ins>variants</ins>: C<span style="color:gray">onvolutional</span>NNs, R<span style="color:gray">ecurrent</span>NNs, transformers, ...
   - Plain vanilla form, aka **MLP (multilayer perceptron)**
 - **Neuron**: a thing that holds a number, between $0.0 - 1.0$. 
@@ -107,6 +105,7 @@ Below are notes on the Interactive 3Blue1Brown Series on DL, [written version](h
   - So:
     - the weights tell you this neuron in the second layer is <ins>picking up on what pattern </ins>, and 
     - the bias tells you <ins>how big that weighted sum needs to be</ins> before the neuron gets <ins>meaningfully active</ins>. <br>
+    - Picture below shows the example dimensionality of $w$ and $b$.
   
 ![Image](/pics/dimensionality.png)
 
@@ -121,8 +120,7 @@ Below are notes on the Interactive 3Blue1Brown Series on DL, [written version](h
 ![Image](/pics/mathrepre1.png) 
 ![Image](/pics/mathrepre2.png)
 
-#### Learning (how to train it with labeled examples)<br>
-*(Source: [What is Gradient Descent?](https://www.youtube.com/watch?v=IHZwWFHWa-w&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&index=3))*
+#### Learning (how to train it with labeled examples)
 > By learning, we mean getting the computer to find an optimal setting for all these parameters that will solve the problem at hand.
 > ML vs CS: no instructions/algorithms on how, but algorithms on taking labeld example to adjust parameters and perform better. 
 - Training data: the examples given
@@ -133,4 +131,3 @@ Below are notes on the Interactive 3Blue1Brown Series on DL, [written version](h
 
 
 #### Backpropagation
-*(Source: [What is backpropagation doing?](https://www.youtube.com/watch?v=Ilg3gGewQ5U&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&index=4))*

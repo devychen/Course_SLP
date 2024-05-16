@@ -1,0 +1,11 @@
+{
+  "Web": 0,
+  "Panorama": 1,
+  "International": 2,
+  "Wirtschaft": 3,
+  "Sport": 4,
+  "Inland": 5,
+  "Etat": 6,
+  "Wissenschaft": 7,
+  "Kultur": 8
+}
