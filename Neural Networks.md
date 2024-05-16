@@ -114,7 +114,7 @@ Below are notes on the Interactive 3Blue1Brown Series on DL, [written version](h
   > Each neuron is a function, it takes in the activations of all neurons in the previous layer, and spits out a number between $0 - 1$. <br>
   > The entire network is just a function too! It takes in 784 numbers as its input, and spits out 10 numbers as its output. It’s an absurdly complicated function, because it takes over 13,000 parameters (weights and biases), and it involves iterating many matrix-vector products and sigmoid squishificaitons together. But it’s just a function nonetheless. <br>
 
-<img src="/pics/neural-network-function.png" width = "50" height = "10")
+<img src="/pics/neural-network-function.png" width = "50" height = "10">
 
   - Using matrixes as a whole instead of one-by-one: <br>
 
