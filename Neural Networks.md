@@ -83,6 +83,9 @@
   - Determine how strong the connectons between layers are at the heart of how NN operates. 
   - <ins>The motivation</ins>: We hope that the layered structure might <ins>allow the problem to be broken into smaller steps</ins>, from pixels to edges to loops and lines, and finally to digits:
     - <span style="color:gray">i.e. The second layer could pick up on edges, the third on patterns like loops and lines, and the last one pieces together those patterns to recognize digits</span>.
+
+![Image](/pics/each-layer.png)
+
 - How information passes between layers (**weights**)
   - > what parameters the network should have, what knobs and dials you should be able to tweak, so that it’s expressive enough to potentially capture the pattern.
   - Assign **weights** (just numbers) to each neuron, each weight is an indication of how its neuron in the first layer is <ins>correlated with</ins> this new neuron in the second layer.
