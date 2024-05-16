@@ -66,7 +66,7 @@
 
 
 ## Additional Materials
-Below are notes on the [Interactive 3Blue1Brown Series on DL](https://www.3blue1brown.com/topics/neural-networks)
+Below are notes on the Interactive 3Blue1Brown Series on DL, [written version](https://www.3blue1brown.com/topics/neural-networks), and the [video](https://www.3blue1brown.com/topics/neural-networks)
 
 #### Introduction
   > Somehow identifying digits is incredibly easy for your brain to do, but almost impossible to describe how to do. The traditional methods of computer programming, with if statements and for loops and classes and objects and functions, just don’t seem suitable to tackle this problem. But what if we could write a program that mimics the structure of your brain? That’s <ins>the idea behind neural networks</ins>. <br>
@@ -114,7 +114,7 @@ Below are notes on the [Interactive 3Blue1Brown Series on DL](https://www.3blue1
   > Each neuron is a function, it takes in the activations of all neurons in the previous layer, and spits out a number between $0 - 1$. <br>
   > The entire network is just a function too! It takes in 784 numbers as its input, and spits out 10 numbers as its output. It’s an absurdly complicated function, because it takes over 13,000 parameters (weights and biases), and it involves iterating many matrix-vector products and sigmoid squishificaitons together. But it’s just a function nonetheless. <br>
 
-![Image](/pics/neural-network-function.png)
+<img src="/pics/neural-network-function.png" width = "50" height = "10")
 
   - Using matrixes as a whole instead of one-by-one: <br>
 
