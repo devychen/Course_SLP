@@ -108,7 +108,7 @@ Below are notes on the Interactive 3Blue1Brown Series on DL, [written version](h
     - the weights tell you this neuron in the second layer is <ins>picking up on what pattern </ins>, and 
     - the bias tells you <ins>how big that weighted sum needs to be</ins> before the neuron gets <ins>meaningfully active</ins>. <br>
   
-![Image](/pics/dimensionality.png)
+![Image alt >](/pics/dimensionality.png)
 
 - **Math representation/Formal annotation**
   > Each neuron is a function, it takes in the activations of all neurons in the previous layer, and spits out a number between $0 - 1$. <br>
