@@ -124,8 +124,9 @@
 ![Image](/pics/mathrepre2.png)
 
 #### Learning (how to train it with labeled examples)
-> By learning, we mean getting the computer to find an optimal setting for all these parameters that will solve the problem at hand.
-> ML vs CS: no instructions/algorithms on how, but algorithms on taking labeld example to adjust parameters and perform better. 
+> By **learning**, we mean getting the computer to find an optimal setting for all these parameters that will solve the problem at hand. <br>
+> ML vs CS: no instructions/algorithms on how, but algorithms on taking labeld example to adjust parameters and perform better. <br>
+> Recall: our network's behavior is determined by all of its weights and biases. The <ins>weights</ins> represent the strength of connections between each neuron in one layer and each neuron in the next. And each <ins>bias</ins> is an indication of whether its neuron tends to be active or inactive.
 - Training data: the examples given
 - 
 
