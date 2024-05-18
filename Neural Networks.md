@@ -128,10 +128,29 @@
 > ML vs CS: no instructions/algorithms on how, but algorithms on taking labeld example to adjust parameters and perform better. <br>
 > Recall: our network's behavior is determined by all of its weights and biases. The <ins>weights</ins> represent the strength of connections between each neuron in one layer and each neuron in the next. And each <ins>bias</ins> is an indication of whether its neuron tends to be active or inactive.
 - Training data: the examples given
-- 
+- **Gradient Descent**
+  - **Gradient**, a term from calculus. It's a <ins>vector</ins> that tells you which direction you should step to increase the function most quickly.
+  - **More frankly, understand GD as a way to compute this vector, which tells you both what the “downhill” direction is, and how steep it is.**
+  - By following the slope (moving in the downhill direction), we approach a local minimum.
+  - The image to have in mind is a ball rolling down a hill (see below)
+  - We start with one random input (could be ≥2), so <ins>there are many possible valleys you might land in</ins> depending on which random input you start at, and there’s no guarantee that the local minimum you land in will be the smallest possible value for the cost function
+  - If you <ins>make your step sizes proportional to the slope itself</ins> when the slope flattens out towards a minimum, your steps will get smaller and smaller, and that keeps you from overshooting.
+
+![Image](/pics/gradient-ball.png)
+
+
 
 
 
 
 
 #### Backpropagation
+
+
+
+# Quick Summary
+- The **weights** represent the strength of connections between each neuron in one layer and each neuron in the next. 
+- Each **bias** is an indication of whether its neuron tends to be active or inactive.
+- **Gradient Descent**: A way to compute the **gradient** - a vector that tells which direction and steep to go downhill and so to find the minimal value.
+
+
