@@ -89,7 +89,10 @@
 - How information passes between layers (**weights**)
   - > what parameters the network should have, what knobs and dials you should be able to tweak, so that it’s expressive enough to potentially capture the pattern.
   - Assign **weights** (just numbers) to each neuron, each weight is an indication of how its neuron in the first layer is <ins>correlated with</ins> this new neuron in the second layer.
-  - the hope is that if we add up all the desires from all the weights, the end result will be a neuron that does a reasonably good job of detecting what we’re looking for.
+  - Relations:
+    - Increasing one of those weights of a connection with a bright neuron has a bigger influence on the cost function than increasing the weight of a connection with a dimmer neuron.
+    - <ins>The biggest increases in weights</ins>—the biggest strengthening of connections—happens between neurons that are <ins>the most active</ins> and the ones which we wish to <ins>become more active</ins>.
+  - The hope is that if we add up all the desires from all the weights, the end result will be a neuron that does a reasonably good job of detecting what we’re looking for.
   - So to actually compute the value of this second-layer neuron, we take all the activations from the neurons in the first layer, and compute their weighted sum:
     $w_1a_1+w_2a_2+w_3a_3+...+w_na_n$
   - the result is a number, we need to squish the real number line into the range between $0 - 1$, thus - **Sigmoid Squashification $\sigma$** <span style="color:lightgray">(S型壓縮)</span> or other <ins>**activation** functions (the activation of the neurons)</ins> such as ReLU <span style="color:lightgray">(both non-linear)</span>.
@@ -135,22 +138,59 @@
   - The image to have in mind is a ball rolling down a hill (see below)
   - We start with one random input (could be ≥2), so <ins>there are many possible valleys you might land in</ins> depending on which random input you start at, and there’s no guarantee that the local minimum you land in will be the smallest possible value for the cost function
   - If you <ins>make your step sizes proportional to the slope itself</ins> when the slope flattens out towards a minimum, your steps will get smaller and smaller, and that keeps you from overshooting.
+  - In practice, each step will look like $\eta\Delta C$ where the constant $\eta$ is known as the **learning rate**. <ins>The larger it is, the bigger your steps, which means you might approach the minimum faster</ins>, but there’s a risk of overshooting and oscillating a lot around that minimum.
+  - Steps: 
+    1. Initialisation: start with random values for $w$ & $b$;
+    2. Computation gradient: calculate the gradient with respect to each parameter, taking partial derivatives of the cost function with respect to $w$ & $b$;
+    3. Update parameters $\theta$: Adjust the parameters (could be a $w$ or $b$) in the direction opposite to the gradient.
+    4. Iterate: Repeat the gradient computation and parameter update steps until convergence, i.e., until the changes in the cost function are smaller than a pre-defined threshold, or for a fixed number of iterations.
 
 ![Image](/pics/gradient-ball.png)
 
+### Limitations
+Classical neural networks has a constrained training environment. Every digit that it saw was of a particular size, centered in the frame. So if you give it something that is too big or too small or not quite in the center, it is bound to get confused.<br>
+Our current learning algorithm does nothing to let the network transfer knowledge of patterns picked up on one region of the grid to another, or to make inferences about scaling. In fact, nothing about our training algorithm even uses the fact that some pixels are adjacent to others.
 
-
-
-
+If you start thinking hard about how to change structure of this network to allow for more flexible learning, e.g. how learning a pattern in one part of the image could naturally transfer to any other part of the image, you’ll be well situated to learn about some of the more modern variations on this theme, most notably convolutional neural networks.
 
 
 #### Backpropagation
+- **Backpropagation** is an algorithm for computing that negative gradient.
+  - **Negative gradient** of the cost function is a 13,002-dimensional <ins>vector</ins> that tells us <ins>how to push all the weights and biases to decrease the cost most efficiently</ins>.
+    -  An interpret example: the component associated with the weight on one neuron comes out to be 3.2, while the component associated with some other neuron is 0.1. <ins>The way to read this is that the cost function is 32 times more sensitive to changes to that first weight</ins>. So if you were to wiggle the value of that weight a bit, it’ll cause a change to the cost function 32 times greater than what the same wiggle to the second weight would cause.
+- The <ins>intuition</ins> is that, there are 3 avenues together to increase a neuron's activation/cost function:
+  1. Increase the bias: 
+    - Increase the bias associated with the wanted neuron and decrease those with all the other neurons.
+  2. Increase the weights
+    - Increasing one of those weights of a connection with the brightest neuron (than increasing the weight of a connection with a dimmer neuron).
+  3. Change the activations from the previous layer
+    - Increasing activations of all neurons in the previous layer in proportion to the corresponding weights.
+    - (Note that we can’t influence the activations in the previous layer directly. But we can change the weights and biases that determine their values.)
+
+
+
 
 
 
 # Quick Summary
-- The **weights** represent the strength of connections between each neuron in one layer and each neuron in the next. 
-- Each **bias** is an indication of whether its neuron tends to be active or inactive.
-- **Gradient Descent**: A way to compute the **gradient** - a vector that tells which direction and steep to go downhill and so to find the minimal value.
+- **Activation function**: a mathematical operation that transforms the input into an output signal. This output signal is what we call the "**activation**".
+  - The **activation value** is defined as a weighted sum of all activations from the previous layer, plus a bias, which is then plugged into activation function.
+- **Cost/loss function**: a math function that quantifies the error between predicted and actual values, it is designed to measure network performance. We change the weights and biases to decrease the **cost**.
+  - The **cost** for a single training example is the sum of the squares of the differences between the actual output and the desired output.
+-  The parameters to be optimized:
+    - The **weights** represent the strength of connections between each neuron in one layer and each neuron in the next. It determines the influence of each feature on the output.
+    - Each **bias** is an indication of whether its neuron tends to be active or inactive. It allows the model to fit the data even when all feature values are zero.
+- **Gradient Descent**: The method to minimising the cost function by computing the **gradient** with respect to model parameters w&b.
+  - **Gradient**: a <ins>vector</ins> of partial derivatives of the cost function with respect to the model parameters. It points in the direction of the steepest ascent of the cost function as so to find the minimal value (of w & b?), namely it points in the direction of increasing cost, so moving in the opposite direction to reduce the cost.
+    - More frankly, gradient tells you how <ins>sensitive</ins> the cost function is to each corresponding weight and bias
+  - **Learning rate** measures the step, the larger the bigger. 
 
+
+<br>
+<br>
+
+# Others
+### Derivatives
+
+### Partial Derivatives
 
