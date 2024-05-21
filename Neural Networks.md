@@ -68,12 +68,12 @@
 ## Additional Materials
 > Below are notes based on the Interactive 3Blue1Brown Series on DL, [written version](https://www.3blue1brown.com/topics/neural-networks), and the [video](https://www.3blue1brown.com/topics/neural-networks).<br> He's also recommended an [online book](http://neuralnetworksanddeeplearning.com/) on NN and DL.
 
-#### Introduction
+### Introduction
   > Somehow identifying digits is incredibly easy for your brain to do, but almost impossible to describe how to do. The traditional methods of computer programming, with if statements and for loops and classes and objects and functions, just don’t seem suitable to tackle this problem. But what if we could write a program that mimics the structure of your brain? That’s <ins>the idea behind neural networks</ins>. <br>
 
   > Moreover, just as you learn by seeing many examples, the “learning” part of machine learning comes from the fact that we never give the program any specific instructions for how to identify digits. Instead, we’ll <ins>show it many examples of hand-drawn digits together with labels for what they should be, and leave it up to the computer to adapt the network based on each new example</ins>.
 
-#### Structure
+### Structure
 - Many <ins>variants</ins>: C<span style="color:gray">onvolutional</span>NNs, R<span style="color:gray">ecurrent</span>NNs, transformers, ...
   - Plain vanilla form, aka **MLP (multilayer perceptron)**
 - **Neuron**: a thing that holds a number, between $0.0 - 1.0$. 
@@ -126,7 +126,7 @@
 ![Image](/pics/mathrepre1.png) 
 ![Image](/pics/mathrepre2.png)
 
-#### Learning (how to train it with labeled examples)
+### Learning (how to train it with labeled examples)
 > By **learning**, we mean getting the computer to find an optimal setting for all these parameters that will solve the problem at hand. <br>
 > ML vs CS: no instructions/algorithms on how, but algorithms on taking labeld example to adjust parameters and perform better. <br>
 > Recall: our network's behavior is determined by all of its weights and biases. The <ins>weights</ins> represent the strength of connections between each neuron in one layer and each neuron in the next. And each <ins>bias</ins> is an indication of whether its neuron tends to be active or inactive.
@@ -154,10 +154,11 @@ Our current learning algorithm does nothing to let the network transfer knowledg
 If you start thinking hard about how to change structure of this network to allow for more flexible learning, e.g. how learning a pattern in one part of the image could naturally transfer to any other part of the image, you’ll be well situated to learn about some of the more modern variations on this theme, most notably convolutional neural networks.
 
 
-#### Backpropagation
-- **Backpropagation** is an algorithm for computing that negative gradient.
-  - **Negative gradient** of the cost function is a 13,002-dimensional <ins>vector</ins> that tells us <ins>how to push all the weights and biases to decrease the cost most efficiently</ins>.
+### Backpropagation (反向传播)
+- **Backpropagation** is an algorithm for computing that negative gradient of the network's cost function.
+  - **Negative gradient** of the cost function is a (multi-)dimensional <ins>vector</ins> that tells us <ins>how to push all the weights and biases to decrease the cost most efficiently</ins>.
     -  An interpret example: the component associated with the weight on one neuron comes out to be 3.2, while the component associated with some other neuron is 0.1. <ins>The way to read this is that the cost function is 32 times more sensitive to changes to that first weight</ins>. So if you were to wiggle the value of that weight a bit, it’ll cause a change to the cost function 32 times greater than what the same wiggle to the second weight would cause.
+  - BackP helps to find the derivatives - <ins>the entries/elements of the gradient vector</ins> are the partial derivatives of cost function $C$ with respects to every $weights$ and $bias$ in the network. 
 - The <ins>intuition</ins> is that, there are 3 avenues together to increase a neuron's activation/cost function:
   1. Increase the bias: 
     - Increase the bias associated with the wanted neuron and decrease those with all the other neurons.
@@ -167,9 +168,30 @@ If you start thinking hard about how to change structure of this network to allo
     - Increasing activations of all neurons in the previous layer in proportion to the corresponding weights.
     - (Note that we can’t influence the activations in the previous layer directly. But we can change the weights and biases that determine their values.)
 
+![Image](/pics/simple-weights-and-biases.svg)
 
+- Its calculation (chain rule in context of NN in ML)
+  - Basically, we want to expore how sensitive the $cost$ is to small changes in the $weight$.
+    - $C_0 = (a^{(L)} - y)^2$, if y is the expected output.
+    - $a^{(L)} = \sigma (z^{(L)})$
+      - $z$ is the weight sum: $z=w^{(L)}a^{(L-1)}+b^{(L)}$
+  - $\frac{\partial C_0}{\partial w^{(L)}}$: 
+    - The ratio of a tiny change to $z^{(L)}$ to the tiny change in $w^{(L)}$.
+    - That is, <ins>the **derivative** of $z^{(L)}$ with respect to $w^{(L)}$</ins>. It is the derivatives that we actually want.
+    - The nudge to $w^{(L)}$ has a chain of effects which eventually causes a nudge to $C_0$. 
+  - The chain rule ($w \to z \to a \implies C$), where multiplying these three ratios gives us the sensitivity of cost to small changes in weights. See picture below:
 
+  ![Image](/pics/chain-rule-breakdown.svg)
 
+  - The constiuent parts of $\frac{\partial C_0}{\partial w^{(L)}}$ (see picture below for individual formulas):
+    - $\frac{\partial C_0}{\partial w^{(L)}} = a^{(L-1)} \sigma' (z^{(L)})2(a^{(L)}-y)$
+    - Attention that $\frac{\partial C_0}{\partial a^{(L)}}$ is proportional to the difference between the actual output and the desired output. This means that when the actual output is way different than what we want it to be, even small nudges to the activation stand to make a big difference to the cost.
+
+  ![Image](/pics/each-part-equation.png)
+  - The full cost function for the network ($C$) is the average of all the individual costs for each training example:
+    - $C = \frac{1}{n} \sum_{\substack{k=0}}^{n-1} C_k$
+  - And so the derivative of $C$ is the average of all individual derivatives, it tells us how the overall cost of the network will change when we wiggle the last weight.
+    - $\frac{\partial C}{\partial w^{(L)}} = \frac{1}{n} \sum_{\substack{k=0}}^{n-1} \frac{\partial C_k}{\partial w^{(L)}}$ 
 
 
 # Quick Summary
@@ -180,10 +202,12 @@ If you start thinking hard about how to change structure of this network to allo
 -  The parameters to be optimized:
     - The **weights** represent the strength of connections between each neuron in one layer and each neuron in the next. It determines the influence of each feature on the output.
     - Each **bias** is an indication of whether its neuron tends to be active or inactive. It allows the model to fit the data even when all feature values are zero.
+    - For an extremely simple NN where each layer has just one neuron, the network is determined by 3 $weights$ (one for each connection) and 3 $bias$ (one for each neuron except the 1st). 
 - **Gradient Descent**: The method to minimising the cost function by computing the **gradient** with respect to model parameters w&b.
   - **Gradient**: a <ins>vector</ins> of partial derivatives of the cost function with respect to the model parameters. It points in the direction of the steepest ascent of the cost function as so to find the minimal value (of w & b?), namely it points in the direction of increasing cost, so moving in the opposite direction to reduce the cost.
     - More frankly, gradient tells you how <ins>sensitive</ins> the cost function is to each corresponding weight and bias
   - **Learning rate** measures the step, the larger the bigger. 
+- **Backpropagation**
 
 
 <br>
