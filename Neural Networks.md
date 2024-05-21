@@ -188,6 +188,7 @@ If you start thinking hard about how to change structure of this network to allo
     - Attention that $\frac{\partial C_0}{\partial a^{(L)}}$ is proportional to the difference between the actual output and the desired output. This means that when the actual output is way different than what we want it to be, even small nudges to the activation stand to make a big difference to the cost.
 
   ![Image](/pics/each-part-equation.png)
+
   - The full cost function for the network ($C$) is the average of all the individual costs for each training example:
     - $C = \frac{1}{n} \sum_{\substack{k=0}}^{n-1} C_k$
   - And so the derivative of $C$ is the average of all individual derivatives, it tells us how the overall cost of the network will change when we wiggle the last weight.
