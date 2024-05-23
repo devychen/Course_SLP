@@ -168,7 +168,7 @@ If you start thinking hard about how to change structure of this network to allo
     - Increasing activations of all neurons in the previous layer in proportion to the corresponding weights.
     - (Note that we can’t influence the activations in the previous layer directly. But we can change the weights and biases that determine their values.)
 
-![Image](/pics/simple-weights-and-biases.svg)
+![Image](/pics/simple-weights-and-biases.png)
 
 - Its calculation (chain rule in context of NN in ML)
   - Basically, we want to expore how sensitive the $cost$ is to small changes in the $weight$.
@@ -181,7 +181,7 @@ If you start thinking hard about how to change structure of this network to allo
     - The nudge to $w^{(L)}$ has a chain of effects which eventually causes a nudge to $C_0$. 
   - The chain rule ($w \to z \to a \implies C$), where multiplying these three ratios gives us the sensitivity of cost to small changes in weights. See picture below:
 
-  ![Image](/pics/chain-rule-breakdown.svg)
+  ![Image](/pics/chain-rule-breakdown.png)
 
   - The constiuent parts of $\frac{\partial C_0}{\partial w^{(L)}}$ (see picture below for individual formulas):
     - $\frac{\partial C_0}{\partial w^{(L)}} = a^{(L-1)} \sigma' (z^{(L)})2(a^{(L)}-y)$
@@ -189,10 +189,26 @@ If you start thinking hard about how to change structure of this network to allo
 
   ![Image](/pics/each-part-equation.png)
 
-  - The full cost function for the network ($C$) is the average of all the individual costs for each training example:
+  - The <ins>full cost function for the network</ins> ($C$) is the average of all the individual costs for each training example:
     - $C = \frac{1}{n} \sum_{\substack{k=0}}^{n-1} C_k$
-  - And so the derivative of $C$ is the average of all individual derivatives, it tells us how the overall cost of the network will change when we wiggle the last weight.
+  - And so <ins>the derivative of the network cost function</ins> ($C$) is the average of all individual derivatives, it tells us how the overall cost of the network will change when we wiggle the last weight.
     - $\frac{\partial C}{\partial w^{(L)}} = \frac{1}{n} \sum_{\substack{k=0}}^{n-1} \frac{\partial C_k}{\partial w^{(L)}}$ 
+
+  - <ins>The bias</ins>: the sensitivity of the cost function to a change in the bias is <ins>almost identical</ins> to the equation for a change to the weight.
+  - <ins>All the other weights and biases lie in earlier layers</ins> of the network, their influence on the cost is less direct. The way we handle them is to first see how sensitive the cost is to the value of that neuron in the second-to-last layer $a^{(L-1)}$, and then to see how sensitive that value is to all the preceding weights and biases.
+  - The trick here is to remember that <ins>the activation in the previous layer is actually determined by its own set of weights and biases</ins>. In reality, our tree stretches back farther than we’ve shown so far:
+
+  ![Image](/pics/tree-extended.png)
+
+  - This is where the propagation backwards comes in. Even though we won’t be able to directly change that activation, it’s helpful to keep track of, because we can just keep iterating this chain rule backwards to see how sensitive the cost function is to previous weights and biases. For example:
+    - How would you break down the derivative $\frac{\partial C}{\partial w^{(L-1)}}$ into bite-size steps using the chain rule?:
+      - $\frac{\partial C_0}{\partial w^{(L-1)}} = \frac{\partial z^{(L-1)}}{\partial w^{(L-1)}} \frac{\partial a^{(L-1)}}{\partial z^{(L-1)}} \frac{\partial z^{(L)}}{\partial a^{(L-1)}} \frac{\partial a^{(L)}}{\partial z^{(L)}} \frac{\partial C_0}{\partial a^{(L)}} $
+      - These are the derivatives that trace a path through the tree connecting $w^{(L-1)}$ to $C_0$.
+ 
+​
+ 
+​
+
 
 
 # Quick Summary
