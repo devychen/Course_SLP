@@ -1,7 +1,7 @@
 """
 Course:        Statistical Language Processing - Summer 2024
-Assignment:    (Enter the assignment number - e.g. A1)
-Author(s):     (Enter the full names of author(s) here)
+Assignment:    A2
+Author(s):     Yifei Chen
 
 Honor Code:    I/We pledge that this program represents my/our own work,
                and that I/we have not given or received unauthorized help
@@ -13,6 +13,9 @@ import torch
 import numpy as np
 import json
 from constants import *
+## in terminal
+## python3 -m spacy download de_core_news_sm 
+## pip3 install compress_fasttext
 
 
 class Preprocessor:
@@ -62,17 +65,30 @@ class Preprocessor:
 
         :param data_file: file with lines of the form topic;text
         """
-        pass
+        self.X_texts = []
+        self.y_texts = []
+
+        with open(data_file, 'r', encoding='utf-8') as file: ## recall: 'r' means read mode
+            for line in file:
+                line = line.strip() ## delete empty chars before and after each line
+                if line:
+                    topic, text = line.split(';', 1) ## split at ';'
+                    self.X_texts.append(text.strip()) ## delete empty char b&a the extract text and store in the list
+                    self.y_texts.append(topic.strip())
+        
 
     def _load_label_map(self, label_map_file):
         """
         Private method to load the json in label_map_file into the
-        class dictionary self.label_map {label:class_code}.
+        class dictionary self.label_map {label:class_code}:
+             e.g. "Sport": 0,
+             "Kultur": 1,
         Helper function for load_data().
 
         :param label_map_file: json file containing label mapping
         """
-        pass
+        with open(label_map_file, 'r', encoding='utf-8') as file:
+            self.label_map = json.load(file) ## returns JSON object as a dictionary
 
     def load_data(self, data_file, label_map_file):
         """
@@ -82,7 +98,8 @@ class Preprocessor:
         :param data_file: csv data_file containing lines of form topic;text
         :param label_map_file: json file containing mapping from labels to class codes
         """
-        pass
+        self._load_csv_data(data_file)
+        self._load_label_map(label_map_file)
 
     def _preprocess_text(self, text):
         """
@@ -94,7 +111,12 @@ class Preprocessor:
         :param text: str : one text
         :return: list[str] : list of preprocessed token strings
         """
-        pass
+        doc = self.nlp(text) ## create a spaCy object 'doc'
+        tokens = [] ## list 
+        for token in doc:
+            if not token.is_stop and not token.is_punct and not token.is_space and not token.like_num:
+                tokens.append(token.text) ## token.text, a string
+        return tokens      
 
     def _calc_mean_embedding(self, text):
         """
@@ -105,11 +127,24 @@ class Preprocessor:
         Returns the mean of the word vectors for the words in text_tokens. Word
         vectors are retrieved from the embeddings in self.embeddings.
         Words that are not contained in the embeddings are ignored.
+        
+        本質上是想要生成一個代表整個文本的向量(embedding)
+        将一个文本转换为其平均词嵌入表示
+        这种表示方法可以将变长的文本转换为固定长度的向量
+        从而使文本数据能够被机器学习模型处理
 
         :param text: str containing one text
         :return: mean vector, as a tensor of type torch.float32, of the text tokens contained in the embeddings
         """
-        pass
+        tokens = self._preprocess_text(text)
+        embeddings = []
+        for token in tokens:
+            if token in self.embeddings:
+                embeddings.append(self.embeddings[token])
+            if not embeddings:
+                return np.zeros(self.embeddings.get_dimension(), dtype=np.float32)
+        mean_embedding = np.mean(embeddings, axis = 0) ## 0 for mean along the column, 1 for row
+        return mean_embedding
 
     def _generate_X_tensor(self):
         """
@@ -120,7 +155,11 @@ class Preprocessor:
         one text in self.X_texts.
         Helper function for generate_tensors().
         """
-        pass
+        X_embedding = []
+        for text in self.X_texts:
+            mean_embedding = self._calc_mean_embedding(text)
+            X_embedding.append(mean_embedding)
+        self.X_tensor = torch.stack(X_embedding)
 
     def _generate_y_tensor(self):
         """
@@ -136,7 +175,11 @@ class Preprocessor:
         labels must be encoded as integers for training. The model predictions are the integer
         label codes, which are converted back to their string label values for humans.
         """
-        pass
+        y_codes = []
+        for label in self.y_texts:
+            class_code = self.label_map[label]
+            y_codes.append(class_code)
+        self.y_tensor = torch.tensor(y_codes, dtype=torch.long)
 
     def generate_tensors(self):
         """
@@ -145,8 +188,9 @@ class Preprocessor:
 
         Generate X and y tensors from data in self.X_texts and self.y_texts.
         """
-        pass
-
+        self._generate_X_tensor()
+        self._generate_y_tensor()
+        
     def save_tensors(self, tensor_file):
         """
         Public function to save generated tensors X and y,
@@ -164,7 +208,12 @@ class Preprocessor:
 
         :param tensor_file: name of the file to save
         """
-        pass
+        tensor_data = {
+            X_KEY: self.X_tensor,
+            Y_KEY: self.y_tensor,
+            MAP_KEY: self.label_map
+        }
+        torch.save(tensor_data, tensor_file)
 
 
 if __name__ == '__main__':
@@ -172,4 +221,4 @@ if __name__ == '__main__':
     Create tensor files for train, dev, test data here.
     Save in Data directory.
     """
-    pass
+    

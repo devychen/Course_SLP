@@ -13,8 +13,8 @@ class TestPreprocessor(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.nlp = spacy.load('de_core_news_sm', disable=['parser', 'ner'])
-        cls.embeddings = compress_fasttext.models.CompressedFastTextKeyedVectors.load("Data/fasttext-de-mini")
-        cls.label_map_file = "Data/label_map.json"
+        cls.embeddings = compress_fasttext.models.CompressedFastTextKeyedVectors.load("fasttext-de-mini")
+        cls.label_map_file = "/Users/ychen/Notes-SNLP/Data/label_map.json"
         cls.label_map = {
             "Web": 0,
             "Panorama": 1,
