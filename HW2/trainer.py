@@ -78,7 +78,10 @@ class Trainer:
 
         :param train_tensor_file: file containing training tensors
         """
-        pass
+        data = torch.load(train_tensor_file)
+        self.X_train = data[X_KEY]
+        self.y_train = data[Y_KEY]
+        self.label_map = data[MAP_KEY]
 
     def _load_dev_tensors(self, dev_tensor_file):
         """
@@ -92,7 +95,9 @@ class Trainer:
 
         :param dev_tensor_file: file containing dev tensors
         """
-        pass
+        data = torch.load(dev_tensor_file)
+        self.X_dev = data[X_KEY]
+        self.y_dev = data[Y_KEY]
 
     def load_data(self, train_tensor_file, dev_tensor_file):
         """
@@ -104,7 +109,10 @@ class Trainer:
         :param train_tensor_file: file containing training tensors
         :param dev_tensor_file: file containing dev tensors
         """
-        pass
+        self._load_train_tensors(train_tensor_file)
+        self._load_dev_tensors(dev_tensor_file)
+        self.n_dims = self.X_train.shape[1]
+        self.n_classes = len(self.label_map)
 
     def _macro_f1(self, model):
         """
@@ -127,7 +135,9 @@ class Trainer:
         :return: float - macro F1 score
         """
         with torch.no_grad():
-            pass
+            outputs = model(self.X_dev)
+            _, predicted = torch.max(outputs, 1)
+            return f1_score(self.y_dev.cpu(), predicted.cpu(), average='macro')
 
     def _training_loop(self, model, loss_fn, optimizer, n_epochs):
         """
@@ -157,7 +167,31 @@ class Trainer:
         :param n_epochs: number of training epochs
         :return: dictionary containing model state, F1 score, and epoch of the best model
         """
-        pass
+        best_f1 = 0.0
+        best_epoch = 0
+        best_model_state = None
+        
+        for epoch in range(n_epochs):
+            model.train()
+            optimizer.zero_grad()
+            outputs = model(self.X_train)
+            loss = loss_fn(outputs, self.y_train)
+            loss.backward()
+            optimizer.step()
+            
+            model.eval()
+            current_f1 = self._macro_f1(model)
+            if current_f1 > best_f1:
+                best_f1 = current_f1
+                best_epoch = epoch
+                best_model_state = copy.deepcopy(model.state_dict())
+        
+        return {
+            MODEL_STATE_KEY: best_model_state,
+            F1_MACRO_KEY: best_f1,
+            BEST_EPOCH_KEY: best_epoch
+        }
+
 
     def train(self, hidden_size, n_epochs, learning_rate):
         """
@@ -188,7 +222,25 @@ class Trainer:
         # Use a seed to make sure that results are reproducible.
         # Please do not remove or change the seed.
         torch.manual_seed(42)
-        pass
+        
+        model = FeedForwardNet(self.n_dims, hidden_size, self.n_classes)
+        loss_fn = nn.CrossEntropyLoss()
+        optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
+        
+        best_model_dict = self._training_loop(model, loss_fn, optimizer, n_epochs)
+        best_model_dict.update({
+            HIDDEN_SIZE_KEY: hidden_size,
+            N_DIMS_KEY: self.n_dims,
+            N_CLASSES_KEY: self.n_classes,
+            LEARNING_RATE_KEY: learning_rate,
+            N_EPOCHS_KEY: n_epochs,
+            OPTIMIZER_NAME_KEY: optimizer.__class__.__name__,
+            LOSS_FN_NAME_KEY: loss_fn.__class__.__name__
+        })
+        
+        self.best_model = best_model_dict
+        return best_model_dict
+        
 
     def save_best_model(self, base_filename):
         """
@@ -218,7 +270,19 @@ class Trainer:
 
         :param base_filename: path and base name to save files (e.g. "Models/best")
         """
-        pass
+        model_filename = f"{base_filename}.pt"
+        info_filename = f"{base_filename}-info.json"
+        
+        torch.save({
+            MODEL_STATE_KEY: self.best_model[MODEL_STATE_KEY],
+            N_DIMS_KEY: self.best_model[N_DIMS_KEY],
+            N_CLASSES_KEY: self.best_model[N_CLASSES_KEY],
+            HIDDEN_SIZE_KEY: self.best_model[HIDDEN_SIZE_KEY]
+        }, model_filename)
+        
+        info_to_save = {key: value for key, value in self.best_model.items() if key != MODEL_STATE_KEY}
+        with open(info_filename, 'w') as f:
+            json.dump(info_to_save, f)
 
 
 if __name__ == '__main__':
@@ -227,4 +291,7 @@ if __name__ == '__main__':
     If you train and save a model using the same hyperparameters as
     Models/baseline-model-given, you should get the same results.
     """
-    pass
+    trainer = Trainer()
+    trainer.load_data('train_tensor_file.pt', 'dev_tensor_file.pt')
+    best_model_info = trainer.train(hidden_size=128, n_epochs=10, learning_rate=0.001)
+    trainer.save_best_model('Models/best')
