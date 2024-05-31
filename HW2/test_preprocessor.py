@@ -13,8 +13,8 @@ class TestPreprocessor(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.nlp = spacy.load('de_core_news_sm', disable=['parser', 'ner'])
-        cls.embeddings = compress_fasttext.models.CompressedFastTextKeyedVectors.load("/Users/ychen/Notes-SNLP/fasttext-de-mini")
-        cls.label_map_file = "/Users/ychen/Notes-SNLP/Data/label_map.json"
+        cls.embeddings = compress_fasttext.models.CompressedFastTextKeyedVectors.load("/Users/ychen/Notes-SNLP/HW2/Data/fasttext-de-mini")
+        cls.label_map_file = "/Users/ychen/Notes-SNLP/HW2/Data/label_map.json"
         cls.label_map = {
             "Web": 0,
             "Panorama": 1,
@@ -63,13 +63,13 @@ class TestPreprocessor(unittest.TestCase):
             "Polizei ermittelt wegen Vandalismus.",
             "In einem Forschungszentrum für Primatologie untersuchen Forscher, wie Stress und Fortpflanzung zusammenhängen."
         ]
-        self.prep._load_csv_data("UnitTestData/unittest-train.csv")
+        self.prep._load_csv_data("/Users/ychen/Notes-SNLP/HW2/UnitTestData/unittest-train.csv")
         actual = self.prep.X_texts
         self.assertListEqual(expected, actual)
 
     def test_load_csv_data2(self):
         expected = ["Sport", "Kultur","Web","Wirtschaft","Inland","Etat","International","Panorama","Wissenschaft"]
-        self.prep._load_csv_data("UnitTestData/unittest-train.csv")
+        self.prep._load_csv_data("/Users/ychen/Notes-SNLP/HW2/UnitTestData/unittest-train.csv")
         actual = self.prep.y_texts
         self.assertListEqual(expected, actual)
 
@@ -91,19 +91,19 @@ class TestPreprocessor(unittest.TestCase):
             "Polizei ermittelt wegen Vandalismus.",
             "In einem Forschungszentrum für Primatologie untersuchen Forscher, wie Stress und Fortpflanzung zusammenhängen."
         ]
-        self.prep.load_data("UnitTestData/unittest-train.csv", "Data/label_map.json")
+        self.prep.load_data("/Users/ychen/Notes-SNLP/HW2/UnitTestData/unittest-train.csv", "/Users/ychen/Notes-SNLP/HW2/Data/label_map.json")
         actual = self.prep.X_texts
         self.assertListEqual(expected, actual)
 
     def test_load_data2(self):
         expected = ["Sport", "Kultur", "Web", "Wirtschaft", "Inland", "Etat", "International", "Panorama", "Wissenschaft"]
-        self.prep.load_data("UnitTestData/unittest-train.csv", "Data/label_map.json")
+        self.prep.load_data("/Users/ychen/Notes-SNLP/HW2/UnitTestData/unittest-train.csv", "/Users/ychen/Notes-SNLP/HW2/Data/label_map.json")
         actual = self.prep.y_texts
         self.assertListEqual(expected, actual)
 
     def test_load_data3(self):
         expected = self.label_map
-        self.prep.load_data("UnitTestData/unittest-train.csv", "Data/label_map.json")
+        self.prep.load_data("/Users/ychen/Notes-SNLP/HW2/UnitTestData/unittest-train.csv", "/Users/ychen/Notes-SNLP/HW2/Data/label_map.json")
         actual = self.prep.label_map
         self.assertDictEqual(expected, actual)
 
@@ -177,7 +177,7 @@ class TestPreprocessor(unittest.TestCase):
         self.assertTrue(torch.equal(expected_y, actual_y))
 
     def test_save_tensors(self):
-        tmp_file = "UnitTestData/unittest-tmp.pt"
+        tmp_file = "/Users/ychen/Notes-SNLP/HW2/UnitTestData/unittest-tmp.pt"
 
         # set up preprocessor with fake tensors, label_map
         self.prep.X_tensor = torch.ones((2, 300))

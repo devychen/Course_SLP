@@ -71,10 +71,9 @@ class Preprocessor:
         with open(data_file, 'r', encoding='utf-8') as file: ## recall: 'r' means read mode
             for line in file:
                 line = line.strip() ## delete empty chars before and after each line
-                if line:
-                    topic, text = line.split(';', 1) ## split at ';'
-                    self.X_texts.append(text.strip()) ## delete empty char b&a the extract text and store in the list
-                    self.y_texts.append(topic.strip())
+                topic, text = line.split(';', 1) ## split at ';'
+                self.X_texts.append(text) ## delete empty char b&a the extract text and store in the list
+                self.y_texts.append(topic)
         
 
     def _load_label_map(self, label_map_file):
@@ -112,11 +111,11 @@ class Preprocessor:
         :return: list[str] : list of preprocessed token strings
         """
         doc = self.nlp(text) ## create a spaCy object 'doc'
-        tokens = [] ## list 
+        processed_tokens = [] ## list 
         for token in doc:
             if not token.is_stop and not token.is_punct and not token.is_space and not token.like_num:
-                tokens.append(token.text) ## token.text, a string
-        return tokens      
+                processed_tokens.append(token.text) ## token.text, a string
+        return processed_tokens      
 
     def _calc_mean_embedding(self, text):
         """
@@ -137,14 +136,14 @@ class Preprocessor:
         :return: mean vector, as a tensor of type torch.float32, of the text tokens contained in the embeddings
         """
         tokens = self._preprocess_text(text)
-        embeddings = []
+        vectors = []
         for token in tokens:
             if token in self.embeddings:
-                embeddings.append(self.embeddings[token])
-            if not embeddings:
-                return np.zeros(self.embeddings.get_dimension(), dtype=np.float32)
-        mean_embedding = np.mean(embeddings, axis = 0) ## 0 for mean along the column, 1 for row
-        return mean_embedding
+                vectors.append(self.embeddings[token])
+            if not vectors:
+                return None
+        mean_embedding = np.mean(vectors, axis = 0) ## 0 for mean along the column, 1 for row
+        return torch.tensor(mean_embedding, dtype = torch.float32)
 
     def _generate_X_tensor(self):
         """
@@ -155,6 +154,7 @@ class Preprocessor:
         one text in self.X_texts.
         Helper function for generate_tensors().
         """
+        ## embedding list
         X_embedding = []
         for text in self.X_texts:
             mean_embedding = self._calc_mean_embedding(text)
@@ -175,11 +175,12 @@ class Preprocessor:
         labels must be encoded as integers for training. The model predictions are the integer
         label codes, which are converted back to their string label values for humans.
         """
+        ## label list
         y_codes = []
         for label in self.y_texts:
             class_code = self.label_map[label]
             y_codes.append(class_code)
-        self.y_tensor = torch.tensor(y_codes, dtype=torch.long)
+        self.y_tensor = torch.tensor(y_codes)
 
     def generate_tensors(self):
         """
@@ -221,4 +222,25 @@ if __name__ == '__main__':
     Create tensor files for train, dev, test data here.
     Save in Data directory.
     """
+    spacy_model = spacy.load('de_core_news_sm', disable = ['parser', 'ner'])
+    embeddings = compress_fasttext.models.CompressedFastTextKeyedVectors.load('/Users/ychen/Notes-SNLP/HW2/Data/fasttext-de-mini')
+    prep = Preprocessor(spacy_model, embeddings)
+
+    train_data_file = '/Users/ychen/Notes-SNLP/HW2/Data/train-data.csv'
+    dev_data_file = '/Users/ychen/Notes-SNLP/HW2/Data/dev-data.csv'
+    test_data_file = '/Users/ychen/Notes-SNLP/HW2/Data/test-data.csv'
+    label_map_file = '/Users/ychen/Notes-SNLP/HW2/Data/label_map.json'
+
+    # Load data and generate tensors for train, dev, and test
+    prep.load_data(train_data_file, label_map_file)
+    prep.generate_tensors()
+    prep.save_tensors('/Users/ychen/Notes-SNLP/HW2/Data/train-tensors.pt')
+
+    prep.load_data(dev_data_file, label_map_file)
+    prep.generate_tensors()
+    prep.save_tensors('/Users/ychen/Notes-SNLP/HW2/Data/dev_tensors.pt')
+
+    prep.load_data(test_data_file, label_map_file)
+    prep.generate_tensors()
+    prep.save_tensors('/Users/ychen/Notes-SNLP/HW2/Data/test_tensors.pt')
     

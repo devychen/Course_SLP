@@ -12,8 +12,8 @@ class TestFNNTrainer(unittest.TestCase):
     @classmethod
     def setUp(self) -> None:
         self.trainer = Trainer()
-        train_dict = torch.load("UnitTestData/train-tensors-100.pt")
-        dev_dict = torch.load("UnitTestData/dev-tensors-50.pt")
+        train_dict = torch.load("HW2/UnitTestData/train-tensors-100.pt")
+        dev_dict = torch.load("HW2/UnitTestData/dev-tensors-50.pt")
 
         self.X_train = train_dict[X_KEY]
         self.y_train = train_dict[Y_KEY]
@@ -24,7 +24,7 @@ class TestFNNTrainer(unittest.TestCase):
         self.n_dims = self.X_train.shape[1]
         self.n_classes = len(self.l_map)
 
-        with open("UnitTestData/unittest-model-info.json", 'r') as f:
+        with open("HW2/UnitTestData/unittest-model-info.json", 'r') as f:
             meta = json.load(f)
 
         self.hidden_size = meta[HIDDEN_SIZE_KEY]
@@ -42,37 +42,37 @@ class TestFNNTrainer(unittest.TestCase):
 
     def test_load_train_tensors1(self):
         expected = self.X_train
-        self.trainer._load_train_tensors("UnitTestData/train-tensors-100.pt")
+        self.trainer._load_train_tensors("HW2/UnitTestData/train-tensors-100.pt")
         actual = self.trainer.X_train
         self.assertTrue(torch.equal(expected, actual))
 
     def test_load_train_tensors2(self):
         expected = self.y_train
-        self.trainer._load_train_tensors("UnitTestData/train-tensors-100.pt")
+        self.trainer._load_train_tensors("HW2/UnitTestData/train-tensors-100.pt")
         actual = self.trainer.y_train
         self.assertTrue(torch.equal(expected, actual))
 
     def test_load_train_tensors3(self):
         expected = self.l_map
-        self.trainer._load_train_tensors("UnitTestData/train-tensors-100.pt")
+        self.trainer._load_train_tensors("HW2/UnitTestData/train-tensors-100.pt")
         actual = self.trainer.label_map
         self.assertDictEqual(expected, actual)
 
     def test_load_dev_tensors1(self):
         expected = self.X_dev
-        self.trainer._load_dev_tensors("UnitTestData/dev-tensors-50.pt")
+        self.trainer._load_dev_tensors("HW2/UnitTestData/dev-tensors-50.pt")
         actual = self.trainer.X_dev
         self.assertTrue(torch.equal(expected, actual))
 
     def test_load_dev_tensors2(self):
         expected = self.y_dev
-        self.trainer._load_dev_tensors("UnitTestData/dev-tensors-50.pt")
+        self.trainer._load_dev_tensors("HW2/UnitTestData/dev-tensors-50.pt")
         actual = self.trainer.y_dev
         self.assertTrue(torch.equal(expected, actual))
 
     def test_load_dev_tensors3(self):
         expected = self.l_map
-        self.trainer._load_train_tensors("UnitTestData/dev-tensors-50.pt")
+        self.trainer._load_train_tensors("HW2/UnitTestData/dev-tensors-50.pt")
         actual = self.trainer.label_map
         self.assertDictEqual(expected, actual)
 
@@ -82,7 +82,7 @@ class TestFNNTrainer(unittest.TestCase):
         expected_X_dev = self.X_dev
         expected_y_dev = self.y_dev
         expected_lmap = self.l_map
-        self.trainer.load_data("UnitTestData/train-tensors-100.pt", "UnitTestData/dev-tensors-50.pt")
+        self.trainer.load_data("HW2/UnitTestData/train-tensors-100.pt", "UnitTestData/dev-tensors-50.pt")
         self.assertTrue(torch.equal(expected_X_train, self.trainer.X_train))
         self.assertTrue(torch.equal(expected_y_train, self.trainer.y_train))
         self.assertTrue(torch.equal(expected_X_dev, self.trainer.X_dev))
@@ -91,13 +91,13 @@ class TestFNNTrainer(unittest.TestCase):
 
     def test_load_data2(self):
         expected = self.X_train.shape[1]
-        self.trainer.load_data("UnitTestData/train-tensors-100.pt", "UnitTestData/dev-tensors-50.pt")
+        self.trainer.load_data("HW2/UnitTestData/train-tensors-100.pt", "UnitTestData/dev-tensors-50.pt")
         actual = self.trainer.n_dims
         self.assertEqual(expected, actual)
 
     def test_load_data3(self):
         expected = len(self.l_map)
-        self.trainer.load_data("UnitTestData/train-tensors-100.pt", "UnitTestData/dev-tensors-50.pt")
+        self.trainer.load_data("HW2/UnitTestData/train-tensors-100.pt", "UnitTestData/dev-tensors-50.pt")
         actual = self.trainer.n_classes
         self.assertEqual(expected, actual)
 
@@ -263,16 +263,16 @@ class TestFNNTrainer(unittest.TestCase):
         self.trainer.n_classes = len(self.l_map)
         self.trainer.train(hidden_size, n_epochs, learning_rate)
 
-        base_name = "UnitTestData/tmp-model"
-        model_path = "UnitTestData/tmp-model.pt"
-        model_info_path = "UnitTestData/tmp-model-info.json"
+        base_name = "HW2/UnitTestData/tmp-model"
+        model_path = "HW2/UnitTestData/tmp-model.pt"
+        model_info_path = "HW2/UnitTestData/tmp-model-info.json"
 
         self.trainer.save_best_model(base_name)
 
-        with open("UnitTestData/unittest-model-info.json", 'r') as f:
+        with open("HW2/UnitTestData/unittest-model-info.json", 'r') as f:
             expected = json.load(f)
 
-        with open("UnitTestData/tmp-model-info.json", 'r') as f:
+        with open("HW2/UnitTestData/tmp-model-info.json", 'r') as f:
             actual = json.load(f)
 
         # delete tmp files

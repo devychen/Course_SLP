@@ -1,7 +1,7 @@
 """
 Course:        Statistical Language Processing - Summer 2024
-Assignment:    (Enter the assignment number - e.g. A1)
-Author(s):     (Enter the full names of author(s) here)
+Assignment:    A2
+Author(s):     Yifei Chen
 
 Honor Code:    I/We pledge that this program represents my/our own work,
                and that I/we have not given or received unauthorized help
@@ -15,6 +15,8 @@ import json
 from sklearn.metrics import f1_score
 from constants import *
 
+# device
+device = torch.device('cpu')
 
 class FeedForwardNet(nn.Module):
     def __init__(self, n_dims, hidden_size, n_classes):
@@ -95,9 +97,10 @@ class Trainer:
 
         :param dev_tensor_file: file containing dev tensors
         """
-        data = torch.load(dev_tensor_file)
-        self.X_dev = data[X_KEY]
-        self.y_dev = data[Y_KEY]
+        dev_data = torch.load(dev_tensor_file)
+        self.X_dev = dev_data[X_KEY]
+        self.y_dev = dev_data[Y_KEY]
+        self.label_map = dev_data[MAP_KEY]
 
     def load_data(self, train_tensor_file, dev_tensor_file):
         """
@@ -112,7 +115,7 @@ class Trainer:
         self._load_train_tensors(train_tensor_file)
         self._load_dev_tensors(dev_tensor_file)
         self.n_dims = self.X_train.shape[1]
-        self.n_classes = len(self.label_map)
+        self.n_classes = len(set(self.y_train.tolist()))
 
     def _macro_f1(self, model):
         """
@@ -135,9 +138,10 @@ class Trainer:
         :return: float - macro F1 score
         """
         with torch.no_grad():
-            outputs = model(self.X_dev)
-            _, predicted = torch.max(outputs, 1)
-            return f1_score(self.y_dev.cpu(), predicted.cpu(), average='macro')
+            output_predictions = model(self.X_dev)
+            predicted_labels = torch.argmax(output_predictions, dim = 1).to(device).numpy()
+            macro_f1 = f1_score(self.y_dev.to(device).numpy(), predicted_labels, average = 'macro')
+            return macro_f1
 
     def _training_loop(self, model, loss_fn, optimizer, n_epochs):
         """
@@ -167,23 +171,31 @@ class Trainer:
         :param n_epochs: number of training epochs
         :return: dictionary containing model state, F1 score, and epoch of the best model
         """
-        best_f1 = 0.0
+        best_f1 = 0
         best_epoch = 0
         best_model_state = None
         
         for epoch in range(n_epochs):
             model.train()
-            optimizer.zero_grad()
+
+            ## forward
             outputs = model(self.X_train)
             loss = loss_fn(outputs, self.y_train)
+
+            ## backward
             loss.backward()
+
+            ## optimise
             optimizer.step()
+            optimizer.zero_grad()
             
             model.eval()
             current_f1 = self._macro_f1(model)
+
+            ## confirm if current model is the best
             if current_f1 > best_f1:
                 best_f1 = current_f1
-                best_epoch = epoch
+                best_epoch = epoch + 1
                 best_model_state = copy.deepcopy(model.state_dict())
         
         return {
@@ -221,10 +233,13 @@ class Trainer:
 
         # Use a seed to make sure that results are reproducible.
         # Please do not remove or change the seed.
+
         torch.manual_seed(42)
-        
-        model = FeedForwardNet(self.n_dims, hidden_size, self.n_classes)
+        model = FeedForwardNet(self.n_dims, hidden_size, self.n_classes).to(device)
+
+        ## loss
         loss_fn = nn.CrossEntropyLoss()
+        ## optimizer
         optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
         
         best_model_dict = self._training_loop(model, loss_fn, optimizer, n_epochs)
@@ -239,7 +254,7 @@ class Trainer:
         })
         
         self.best_model = best_model_dict
-        return best_model_dict
+        return self.best_model
         
 
     def save_best_model(self, base_filename):
@@ -270,19 +285,32 @@ class Trainer:
 
         :param base_filename: path and base name to save files (e.g. "Models/best")
         """
-        model_filename = f"{base_filename}.pt"
-        info_filename = f"{base_filename}-info.json"
-        
-        torch.save({
+
+        ## Dictionary for model state and paras
+        model_state_dict = {
             MODEL_STATE_KEY: self.best_model[MODEL_STATE_KEY],
             N_DIMS_KEY: self.best_model[N_DIMS_KEY],
             N_CLASSES_KEY: self.best_model[N_CLASSES_KEY],
             HIDDEN_SIZE_KEY: self.best_model[HIDDEN_SIZE_KEY]
-        }, model_filename)
+        }
         
-        info_to_save = {key: value for key, value in self.best_model.items() if key != MODEL_STATE_KEY}
-        with open(info_filename, 'w') as f:
-            json.dump(info_to_save, f)
+        # save
+        torch.save(model_state_dict, f"{base_filename}.pt")
+
+        # dictionary for additional metadata
+        model_info_to_save = {
+            F1_MACRO_KEY: self.best_model[F1_MACRO_KEY],
+            BEST_EPOCH_KEY: self.best_model[BEST_EPOCH_KEY],
+            HIDDEN_SIZE_KEY: self.best_model[HIDDEN_SIZE_KEY],
+            N_DIMS_KEY: self.best_model[N_DIMS_KEY],
+            N_CLASSES_KEY: self.best_model[N_CLASSES_KEY],
+            LEARNING_RATE_KEY: self.best_model[LEARNING_RATE_KEY],
+            N_EPOCHS_KEY: self.best_model[N_EPOCHS_KEY],
+            OPTIMIZER_NAME_KEY: self.best_model[OPTIMIZER_NAME_KEY],
+            LOSS_FN_NAME_KEY: self.best_model[LOSS_FN_NAME_KEY]
+        }
+        with open(f"{base_filename}-info.json", "w") as f:
+            json.dump(model_info_to_save, f, indent=4)
 
 
 if __name__ == '__main__':
@@ -291,7 +319,11 @@ if __name__ == '__main__':
     If you train and save a model using the same hyperparameters as
     Models/baseline-model-given, you should get the same results.
     """
+    with open("HW2/Models/baseline-model-given-info.json", 'r') as file:
+        baseline = json.load(file)
+
     trainer = Trainer()
-    trainer.load_data('train_tensor_file.pt', 'dev_tensor_file.pt')
-    best_model_info = trainer.train(hidden_size=128, n_epochs=10, learning_rate=0.001)
-    trainer.save_best_model('Models/best')
+    trainer.load_data('HW2/Data/train-tensors.pt', 'HW2/Data/dev_tensors.pt')
+    ## best_model_info
+    trainer.train(baseline["hidden_size"], baseline["n_epochs"], baseline["learning_rate"])
+    trainer.save_best_model("base-model")
