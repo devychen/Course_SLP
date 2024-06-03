@@ -1,7 +1,7 @@
 """
 Course:        Statistical Language Processing - Summer 2024
-Assignment:    (Enter the assignment number - e.g. A1)
-Author(s):     (Enter the full names of author(s) here)
+Assignment:    A2
+Author(s):     Yifei Chen
 
 Honor Code:    I/We pledge that this program represents my/our own work,
                and that I/we have not given or received unauthorized help
