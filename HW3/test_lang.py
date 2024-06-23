@@ -82,22 +82,22 @@ class LangTest(unittest.TestCase):
        self.lang = None
 
     def test_load_vocab1(self):
-        self.lang.load_vocab("UnitTestData/unittest-eng_idx_map.json")
+        self.lang.load_vocab("HW3/UnitTestData/unittest-eng_idx_map.json")
         expected = 32
         self.assertEqual(expected, self.lang.vocab_size)
 
     def test_load_vocab2(self):
-        self.lang.load_vocab("UnitTestData/unittest-eng_idx_map.json")
+        self.lang.load_vocab("HW3/UnitTestData/unittest-eng_idx_map.json")
         expected = self.word2idx
         self.assertDictEqual(expected, self.lang.word2index)
 
     def test_load_vocab3(self):
-        self.lang.load_vocab("UnitTestData/unittest-eng_idx_map.json")
+        self.lang.load_vocab("HW3/UnitTestData/unittest-eng_idx_map.json")
         expected = self.index2word
         self.assertDictEqual(expected, self.lang.index2word)
 
     def test_load_vocab4(self):
-        self.lang.load_vocab("UnitTestData/unittest-phone_idx_map.json")
+        self.lang.load_vocab("HW3/UnitTestData/unittest-phone_idx_map.json")
         expected = 56
         self.assertEqual(expected, self.lang.vocab_size)
 

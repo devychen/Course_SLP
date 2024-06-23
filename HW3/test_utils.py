@@ -10,7 +10,7 @@ class UtilsTest(unittest.TestCase):
                     ([BOS_STR, "h", "æ", "v", "eɪ", EOS_STR],	["have", "a", "?", EOS_STR]),
                     ([BOS_STR, "d", "uː", "w", "iː", "h", "æ", "v", EOS_STR],	["do", "we", "have", ".", EOS_STR]),
                     ([BOS_STR, "w", "ʌ", "t", "j", "uː", "d", "uː", EOS_STR],	["what", "you", "do", "?", EOS_STR])]
-        actual = load_tsv_data("UnitTestData/unittest-dev.tsv")
+        actual = load_tsv_data("HW3/UnitTestData/unittest-dev.tsv")
         self.assertListEqual(expected, actual)
 
 
