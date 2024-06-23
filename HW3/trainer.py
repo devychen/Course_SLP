@@ -49,7 +49,12 @@ class Trainer():
         :param io_token_pairs: lst[(lst[str], lst[str])]
         :return: lst[(tensor, tensor)]
         """
-        pass
+        io_tensor_pairs = []
+        for input_tokens, output_tokens in io_token_pairs:
+            input_tensor = self.input_lang.words_to_tensor(input_tokens)
+            output_tensor = self.output_lang.words_to_tensor(output_tokens)
+            io_tensor_pairs.append((input_tensor, output_tensor))
+        return io_tensor_pairs
 
     def load_data(self, train_data_file):
         """
@@ -59,7 +64,8 @@ class Trainer():
 
         :param train_data_file: tab separated input/output phrases for training
         """
-        pass
+        self.train_io_token_pairs = load_tsv_data(train_data_file)
+        self.train_io_tensor_pairs = self._generate_io_tensor_pairs(self.train_io_token_pairs)
 
     def _train_one(self, input_tensor, target_tensor):
         """
@@ -74,10 +80,15 @@ class Trainer():
         """
 
         # zero optimizer gradients
-        pass
+        self.encoder_optimizer.zero_grad()
+        self.decoder_optimizer.zero_grad()
 
         # forward pass on encoder and decoder
-        pass
+        # on encoder
+        encoder_hidden = self.encoder.initHidden()
+        encoder_outputs, encoder_hidden = self.encoder(input_tensor)
+        # on decoder
+        decoder_outputs, decoder_hidden = self.decoder(encoder_hidden, target_tensor)
 
         # Create a view of target_tensor that removes the last dimension.
         # This is ok because the last dimension is always 1 (1 token index).
@@ -102,16 +113,17 @@ class Trainer():
         #   predictions: tensor of shape (target_tensor.size(0), output vocab_size) containing
         #       a log probability distribution for each output
         #   gold values: target tensor of shape (num_tokens,)
-        pass
+        loss = self.criterion(decoder_outputs, target_tensor)
 
         # backpropagation
-        pass
+        loss.backward()
 
         # update weights
-        pass
+        self.encoder_optimizer.step()
+        self.decoder_optimizer.step()
 
         # return decoder output and scalar loss
-        pass
+        return decoder_outputs, loss.item()
 
     def train(self, n_epochs):
         """
@@ -129,7 +141,28 @@ class Trainer():
         :param n_epochs: number of epochs to train
         :return: dictionary containing the loss and states of the best model
         """
-        pass
+        best_model = {
+            LOSS_KEY: float('inf'),
+            ENCODER_STATE_KEY: None,
+            DECODER_STATE_KEY: None,
+        }
+
+        for epoch in range(n_epochs):
+            epoch_loss = 0
+            for input_tensor, target_tensor in self.train_io_tensor_pairs:
+                _, loss = self._train_one(input_tensor, target_tensor)
+                epoch_loss += loss
+
+            epoch_loss /= len(self.train_io_tensor_pairs)
+
+            if epoch_loss < best_model[LOSS_KEY]:
+                best_model[LOSS_KEY] = epoch_loss
+                best_model[ENCODER_STATE_KEY] = copy.deepcopy(self.encoder.state_dict())
+                best_model[DECODER_STATE_KEY] = copy.deepcopy(self.decoder.state_dict())
+
+            print(f'Epoch {epoch+1}/{n_epochs}, Loss: {epoch_loss:.4f}')
+
+        return best_model
 
 
 def main():
@@ -172,7 +205,43 @@ def main():
 
     Later you can load and evaluate your model with Evaluator.
     """
-    pass
+    input_lang = Lang()
+    output_lang = Lang()
+
+    input_lang.load_vocab('HW3/data/input_vocab.json')
+    output_lang.load_vocab('HW3/data/output_vocab.json')
+
+    hidden_size = 8
+    learning_rate = 0.01
+    teacher_forcing_ratio = 0
+    bidirectional = False
+    n_epochs = 20
+
+    encoder = Encoder(input_lang.vocab_size, hidden_size, bidirectional)
+    decoder = Decoder(hidden_size, output_lang.vocab_size, teacher_forcing_ratio)
+
+    encoder_optimizer = optim.AdamW(encoder.parameters(), lr=learning_rate)
+    decoder_optimizer = optim.AdamW(decoder.parameters(), lr=learning_rate)
+    criterion = nn.NLLLoss()
+
+    trainer = Trainer(input_lang, output_lang, encoder, decoder, encoder_optimizer, decoder_optimizer, criterion)
+    trainer.load_data('HW3/data/train.tsv')
+    best_model = trainer.train(n_epochs)
+
+    model_data = {
+        ENCODER_STATE_KEY: best_model[ENCODER_STATE_KEY],
+        DECODER_STATE_KEY: best_model[DECODER_STATE_KEY],
+        LOSS_KEY: best_model[LOSS_KEY],
+        INPUT_LANG_STATE_KEY: input_lang.get_state_dict(),
+        OUTPUT_LANG_STATE_KEY: output_lang.get_state_dict(),
+        HIDDEN_SIZE_KEY: hidden_size,
+        BIDIRECTIONAL_KEY: bidirectional,
+        N_EPOCHS_KEY: n_epochs,
+        LEARNING_RATE_KEY: learning_rate,
+        TFR_KEY: teacher_forcing_ratio,
+    }
+
+    torch.save(model_data, 'seq2seq_model.pth')
 
 
 if __name__ == '__main__':

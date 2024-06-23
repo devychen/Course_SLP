@@ -21,9 +21,9 @@ class Lang:
     and one for the output language (english).
     """
     def __init__(self):
-        self.word2index = None  # {word:idx} map
-        self.index2word = None  # {idx:word} map
-        self.vocab_size = None
+        self.word2index = {}  # {word:idx} map
+        self.index2word = {}  # {idx:word} map
+        self.vocab_size = 0
 
     def load_vocab(self, vocab_file):
         """
@@ -33,7 +33,11 @@ class Lang:
 
         :param vocab_file: json file containing {word:idx} mapping
         """
-        pass
+        with open(vocab_file, 'r', encoding='utf-8') as file:
+            self.word2index = json.load(file)
+        
+        self.index2word = {idx: word for word, idx in self.word2index.items()}
+        self.vocab_size = len(self.word2index)
 
     def words_to_tensor(self, word_list):
         """
@@ -50,7 +54,8 @@ class Lang:
         :param word_list: list[str] of words to convert
         :return: the generated tensor
         """
-        pass
+        indices = [self.word2index[word] for word in word_list]
+        return torch.tensor(indices, dtype=torch.long).view(-1, 1)
 
     def tensor_to_words(self, word_tensor):
         """
@@ -64,7 +69,9 @@ class Lang:
         :param word_tensor: tensor of shape (num_words,)
         :return: list[str] decoded words as list
         """
-        pass
+        indices = word_tensor.view(-1).tolist()
+        return [self.index2word[idx] for idx in indices]
+
 
     def get_state_dict(self):
         """
@@ -75,7 +82,11 @@ class Lang:
 
         :return: dictionary containing the state of this Lang
         """
-        pass
+        return {
+            'word2index': self.word2index,
+            'index2word': self.index2word,
+            'vocab_size': self.vocab_size
+        }
 
     def load_state_dict(self, state_dict):
         """
@@ -83,4 +94,7 @@ class Lang:
 
         :param state_dict: dictionary containing the state of this Lang
         """
-        pass
+        self.word2index = state_dict['word2index']
+        self.index2word = state_dict['index2word']
+        self.vocab_size = state_dict['vocab_size']
+

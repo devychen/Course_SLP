@@ -28,7 +28,7 @@ class Decoder(nn.Module):
         self.embedding = nn.Embedding(output_vocab_size, hidden_size)
         self.gru = nn.GRU(hidden_size, hidden_size, batch_first=True)
         self.lin = nn.Linear(hidden_size, output_vocab_size)
-        self.log_softmax = nn.LogSoftmax(dim=1)
+        self.log_softmax = nn.LogSoftmax(dim=2)
 
     def forward_step(self, x, hidden):
         """
@@ -40,7 +40,12 @@ class Decoder(nn.Module):
         :param hidden: hidden tensor of shape (1, hidden_size)
         :returns: output of shape (1, output vocab_size), hidden_state of shape (1, hidden_size)
         """
-        pass
+        embedded = self.embedding(x).view(1, 1, -1)
+        output, hidden = self.gru(embedded, hidden)
+        output = self.lin(output) # linear layer before logsoftmax
+        output = self.log_softmax(output) # applied logsoftmax after linear layer
+        return output, hidden
+
 
     def forward(self, encoder_hidden, target_tensor=None):
         """
@@ -74,7 +79,10 @@ class Decoder(nn.Module):
         """
 
         # initialize decoder input and hidden tensors
-        pass
+        decoder_input = torch.tensor([[BOS_IDX]], device=encoder_hidden.device)
+        decoder_hidden = encoder_hidden
+
+        decoder_outputs = []
 
         # if self.teacher_forcing_ratio > 0 and target_tensor is provided,
         # use teacher forcing for ~ teacher_forcing_ratio % of the inputs
@@ -83,16 +91,26 @@ class Decoder(nn.Module):
             use_teacher_forcing = True
 
         if use_teacher_forcing:
-            pass
+            for i in range(target_tensor.size(0)):
+                output, decoder_hidden = self.forward_step(decoder_input, decoder_hidden)
+                decoder_outputs.append(output)
+                decoder_input = target_tensor[i]  # Next input is current target
 
         else:
-            pass
+            for _ in range(MAX_LENGTH):
+                output, decoder_hidden = self.forward_step(decoder_input, decoder_hidden)
+                decoder_outputs.append(output)
+                topv, topi = output.topk(1)
+                decoder_input = topi.squeeze().detach()  # Next input is current prediction
+
+                if decoder_input.item() == EOS_IDX:
+                    break
 
         # Combine decoder outputs (list[tensor of shape (1, output vocab size)])
         # into one tensor of shape (len(decoder_outputs), output_vocab_size)
         # Each "row" represents log probabilities over the output vocabulary
         # for one output token
-        pass
+        decoder_outputs = torch.cat(decoder_outputs, dim=0)
 
         # return values
-        pass
+        return decoder_outputs, decoder_hidden

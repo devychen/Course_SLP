@@ -40,7 +40,11 @@ class Encoder(nn.Module):
         :param hidden: hidden tensor of shape (directions, hidden_size)
         :return: output of shape (1, hidden_size * directions), hidden tensor of shape (directions, hidden_size)
         """
-        pass
+        embedded = self.embedding(x).view(1, 1, -1)
+        output, hidden = self.gru(embedded, hidden)
+        if self.bidirectional:
+            output = output[:, :, :self.hidden_size] + output[:, :, self.hidden_size:]
+        return output, hidden
 
     def forward(self, x):
         """
@@ -63,17 +67,23 @@ class Encoder(nn.Module):
         """
 
         # initialize hidden state
-        pass
+        hidden = self.initHidden()
+        encoder_outputs = []
 
         # iterate token tensors in x
-        pass
+        for token in x:
+            output, hidden = self.forward_step(token, hidden)
+            encoder_outputs.append(output)
+        
+        encoder_outputs = torch.cat(encoder_outputs, dim=0)
 
         # if bidirectional, sum hidden states of both directions.
         # hidden shape (2, hidden_size) --> (1, hidden_size)
-        pass
+        if self.bidirectional:
+            hidden = hidden.view(2, 1, self.hidden_size).sum(dim=0, keepdim=True).view(1, self.hidden_size)
 
         # return values
-        pass
+        return encoder_outputs, hidden
 
     def initHidden(self):
         """
@@ -83,4 +93,5 @@ class Encoder(nn.Module):
 
         :return: initial hidden state tensor of zeros
         """
-        pass
+        directions = 2 if self.bidirectional else 1
+        return torch.zeros(directions, 1, self.hidden_size)

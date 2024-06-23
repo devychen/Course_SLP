@@ -65,7 +65,24 @@ class Evaluator:
 
         :param model_file: model as saved after training
         """
-        pass
+        model_data = torch.load(model_file, map_location=torch.device('cpu'))
+
+        # Load input and output languages
+        self.input_lang = Lang()
+        self.input_lang.load_state_dict(model_data[INPUT_LANG_STATE_KEY])
+
+        self.output_lang = Lang()
+        self.output_lang.load_state_dict(model_data[OUTPUT_LANG_STATE_KEY])
+
+        # Load model architecture and weights
+        self.hidden_size = model_data[HIDDEN_SIZE_KEY]
+        self.bidirectional = model_data[BIDIRECTIONAL_KEY]
+
+        self.encoder = Encoder(self.input_lang.vocab_size, self.hidden_size, self.bidirectional)
+        self.encoder.load_state_dict(model_data[ENCODER_STATE_KEY])
+
+        self.decoder = Decoder(self.hidden_size, self.output_lang.vocab_size)
+        self.decoder.load_state_dict(model_data[DECODER_STATE_KEY])
 
     def load_data(self, data_file):
         """
@@ -75,7 +92,8 @@ class Evaluator:
 
         :param data_file: two-column, tab-separated file
         """
-        pass
+        self.io_token_pairs = load_tsv_data(data_file)
+
 
     def _evaluate_sentence(self, sentence, target):
         """
@@ -93,7 +111,20 @@ class Evaluator:
         """
 
         with torch.no_grad():
-            pass
+            input_tensor = self.input_lang.words_to_tensor(sentence).unsqueeze(0)
+            target_tensor = self.output_lang.words_to_tensor(target).unsqueeze(0)
+
+            encoder_hidden = self.encoder.initHidden()
+            encoder_outputs, encoder_hidden = self.encoder(input_tensor)
+
+            decoder_outputs, decoder_hidden = self.decoder(encoder_hidden, target_tensor)
+            _, topi = decoder_outputs.topk(1)
+            decoded_words = [self.output_lang.index2word[idx.item()] for idx in topi.squeeze()]
+
+            # Calculate BLEU score
+            bleu = bleu_score(' '.join(decoded_words), ' '.join(target))
+
+        return decoded_words, bleu
 
     def evaluate(self, verbose=False):
         """
@@ -103,14 +134,37 @@ class Evaluator:
         :param verbose: if True, print input, target, translation, score for each sentence
         :return: average bleu score over all pairs in self.io_token_pairs
         """
-        pass
+        total_bleu = 0.0
+        num_pairs = len(self.io_token_pairs)
+
+        for input_tokens, target_tokens in self.io_token_pairs:
+            translation, bleu = self._evaluate_sentence(input_tokens, target_tokens)
+            total_bleu += bleu
+
+            if verbose:
+                print(f'Input:    {" ".join(input_tokens)}')
+                print(f'Target:   {" ".join(target_tokens)}')
+                print(f'Prediction: {" ".join(translation)}')
+                print(f'BLEU Score: {bleu:.4f}\n')
+
+        average_bleu = total_bleu / num_pairs if num_pairs > 0 else 0.0
+        return average_bleu
+        
 
 
 def main():
     """Load and evaluate your models here"""
+    evaluator = Evaluator
+    evaluator.load_model('seq2seq_model.pth')
+    evaluator.load_data('HW3/data/dev.tsv')
+    average_bleu = evaluator.evaluate(verbose=True)
 
-    pass
+    print(f'Avg. BLEU Score: {average_bleu:.4f}')
+    
 
 
 if __name__ == '__main__':
     main()
+
+
+# You should get a bleu score ≈ .4 for both.
