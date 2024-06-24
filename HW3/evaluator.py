@@ -156,7 +156,7 @@ def main():
     """Load and evaluate your models here"""
     evaluator = Evaluator
     evaluator.load_model('seq2seq_model.pth')
-    evaluator.load_data('HW3/data/dev.tsv')
+    evaluator.load_data('HW3/Data/dev.tsv')
     average_bleu = evaluator.evaluate(verbose=True)
 
     print(f'Avg. BLEU Score: {average_bleu:.4f}')

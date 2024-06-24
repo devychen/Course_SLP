@@ -208,8 +208,8 @@ def main():
     input_lang = Lang()
     output_lang = Lang()
 
-    input_lang.load_vocab('HW3/data/input_vocab.json')
-    output_lang.load_vocab('HW3/data/output_vocab.json')
+    input_lang.load_vocab('HW3/Data/phone_idx_map.json') # input vocab
+    output_lang.load_vocab('HW3/Data/eng_idx_map.json') # output vocab
 
     hidden_size = 8
     learning_rate = 0.01
@@ -225,7 +225,7 @@ def main():
     criterion = nn.NLLLoss()
 
     trainer = Trainer(input_lang, output_lang, encoder, decoder, encoder_optimizer, decoder_optimizer, criterion)
-    trainer.load_data('HW3/data/train.tsv')
+    trainer.load_data('HW3/Data/train.tsv')
     best_model = trainer.train(n_epochs)
 
     model_data = {
