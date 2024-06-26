@@ -154,8 +154,8 @@ class Evaluator:
 
 def main():
     """Load and evaluate your models here"""
-    evaluator = Evaluator
-    evaluator.load_model('seq2seq_model.pth')
+    evaluator = Evaluator()
+    evaluator.load_model('HW3/Models/seq2seq_model.pth')
     evaluator.load_data('HW3/Data/dev.tsv')
     average_bleu = evaluator.evaluate(verbose=True)
 
