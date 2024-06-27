@@ -57,7 +57,7 @@ appear by chance.
   - Solution 1: using a different function $P_\alpha(c)$ with a setting of $\alpha = 0.75$.
   It increases the probability assigned to rare contexts:
     - $PPMI_\alpha(w,c)=max\left(log_2\frac{P(w,c)}{P(w)P_\alpha(c)},0\right)$
-    - $P_\alpha\(c)=\frac{count(c)^\alpha}{\sum_ccount(c)^\alpha}$
+    - $P_\alpha(c)=\frac{count(c)^\alpha}{\sum_ccount(c)^\alpha}$
   - Solution 2: Laplace smoothing: before PMI, add a small constant k (usually 0.1~3)
   to each count, discounting all the non-zero values.
 
