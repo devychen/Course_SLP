@@ -1,6 +1,7 @@
 # Study Notes
 
 ### Shortcuts
+Now all notes have been moved to [overleaf](https://www.overleaf.com/read/sfrqzfkhvxgh#fbea6b) (View only)
 [Embedding](https://github.com/devychen/Notes-SNLP/blob/main/Embedding.md) <br>
 [Neural Networds](https://github.com/devychen/Notes-SNLP/blob/main/Neural%20Networks.md)
 
