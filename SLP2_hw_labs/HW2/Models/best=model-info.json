@@ -1,0 +1,11 @@
+{
+    "F1_macro": 0.8393957125841577,
+    "best_epoch": 234,
+    "hidden_size": 16,
+    "n_dims": 300,
+    "n_classes": 9,
+    "learning_rate": 0.03,
+    "n_epochs": 250,
+    "optimizer_name": "AdamW",
+    "loss_function_name": "CrossEntropyLoss"
+}
