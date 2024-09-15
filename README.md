@@ -15,3 +15,5 @@ Now all notes have been moved to [overleaf](https://www.overleaf.com/read/sfrqzf
 ### Some links belonging to nowhere
 - [Article on Derivatives of Sigmoid](https://towardsdatascience.com/derivative-of-the-sigmoid-function-536880cf918e)
   - [A step by step online tutorial](https://www.youtube.com/watch?v=5HzVMZKk9pk)
+
+Last modified: 15 Sep 2024 19:12
